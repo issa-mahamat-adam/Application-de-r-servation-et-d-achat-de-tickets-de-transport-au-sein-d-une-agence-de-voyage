@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - NDéré</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: #f0f4f8;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar - Menu de gauche */
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            height: 100%;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 10;
+        }
+
+        .sidebar .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a73e8;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar .logo i {
+            font-size: 1.5rem;
+        }
+
+        .sidebar .menu {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar .menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #5f6368;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .menu a:hover {
+            background: #e8f0fe;
+            color: #1a73e8;
+        }
+
+        .sidebar .menu a.active {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .sidebar .menu a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar .deconnexion {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .sidebar .deconnexion a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #d93025;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .deconnexion a:hover {
+            background: #fce8e6;
+        }
+
+        /* Contenu principal - à droite */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .main-content .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .main-content .header h1 {
+            font-size: 1.8rem;
+            color: #202124;
+        }
+
+        .main-content .header h1 span {
+            color: #1a73e8;
+        }
+
+        .main-content .header .admin-badge {
+            background: #1a73e8;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+
+        .dashboard-card .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card .icon.blue { color: #1a73e8; }
+        .dashboard-card .icon.green { color: #34a853; }
+        .dashboard-card .icon.orange { color: #f9ab00; }
+
+        .dashboard-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #202124;
+        }
+
+        .dashboard-card .label {
+            font-size: 0.9rem;
+            color: #5f6368;
+        }
+
+        /* Tableaux */
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+        .table-container h2 {
+            margin-bottom: 15px;
+            color: #202124;
+            font-size: 1.2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            background: #f8f9fa;
+        }
+
+        table th {
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #5f6368;
+            font-size: 0.85rem;
+        }
+
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+        }
+
+        table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .btn-action {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-edit {
+            background: #e8f0fe;
+            color: #1a73e8;
+        }
+
+        .btn-edit:hover {
+            background: #d2e3fc;
+        }
+
+        .btn-delete {
+            background: #fce8e6;
+            color: #d93025;
+        }
+
+        .btn-delete:hover {
+            background: #f5d0cc;
+        }
+
+        .btn-confirm {
+            background: #e6f4ea;
+            color: #34a853;
+        }
+
+        .btn-confirm:hover {
+            background: #cce9d4;
+        }
+
+        .btn-reject {
+            background: #fef7e0;
+            color: #f9ab00;
+        }
+
+        .btn-reject:hover {
+            background: #fdecc8;
+        }
+
+        .statut-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .statut-badge.confirmé {
+            background: #e6f4ea;
+            color: #34a853;
+        }
+
+        .statut-badge.rejeté {
+            background: #fce8e6;
+            color: #d93025;
+        }
+
+        .statut-badge.en_attente {
+            background: #fef7e0;
+            color: #f9ab00;
+        }
+
+        .statut-badge.programmé {
+            background: #e8f0fe;
+            color: #1a73e8;
+        }
+
+        .statut-badge.complet {
+            background: #fce8e6;
+            color: #d93025;
+        }
+
+        .statut-badge.annulé {
+            background: #fef7e0;
+            color: #f9ab00;
+        }
+
+        .alert {
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .alert.success {
+            background: #e6f4ea;
+            color: #34a853;
+            border: 1px solid #cce9d4;
+        }
+
+        .alert.error {
+            background: #fce8e6;
+            color: #d93025;
+            border: 1px solid #f5d0cc;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+                padding: 15px;
+            }
+            .main-content {
+                margin-left: 200px;
+                padding: 20px;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .sidebar .menu {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .sidebar .menu a {
+                flex: 1;
+                min-width: 100px;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            .sidebar .deconnexion {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar - Menu de gauche -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-paper-plane"></i>
+            <span>NDéré</span>
+        </div>
+        
+        <div class="menu">
+            <a href="admin.html?section=dashboard" class="active">
+                <i class="fas fa-home"></i>
+                <span>Tableau de bord</span>
+            </a>
+            <a href="admin.html?section=trajets">
+                <i class="fas fa-route"></i>
+                <span>Trajets</span>
+            </a>
+            <a href="admin.html?section=utilisateurs">
+                <i class="fas fa-users"></i>
+                <span>Utilisateurs</span>
+            </a>
+            <a href="admin.html?section=paiements">
+                <i class="fas fa-credit-card"></i>
+                <span>Paiements</span>
+            </a>
+        </div>
+        
+        <div class="deconnexion">
+            <a href="deconnexion.html">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="main-content">
+        <!-- En-tête -->
+        <div class="header">
+            <h1>Administration <span>NDéré</span></h1>
+            <div class="admin-badge">
+                <i class="fas fa-crown"></i> Administrateur
+            </div>
+        </div>
+
+        <!-- Messages d'alerte -->
+        <div id="alert-container"></div>
+
+        <!-- Dashboard -->
+        <div id="dashboard-section">
+            <div class="dashboard-grid">
+                <div class="dashboard-card" onclick="window.location.href='admin.html?section=trajets'">
+                    <div class="icon blue">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <div class="number" id="trajets-count">0</div>
+                    <div class="label">Trajets</div>
+                </div>
+                <div class="dashboard-card" onclick="window.location.href='admin.html?section=utilisateurs'">
+                    <div class="icon green">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="number" id="users-count">0</div>
+                    <div class="label">Utilisateurs</div>
+                </div>
+                <div class="dashboard-card" onclick="window.location.href='admin.html?section=paiements'">
+                    <div class="icon orange">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="number" id="paiements-count">0</div>
+                    <div class="label">Paiements effectués</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section Trajets -->
+        <div id="trajets-section" style="display:none;">
+            <div class="table-container">
+                <h2><i class="fas fa-route"></i> Gestion des trajets</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Transport</th>
+                            <th>Départ</th>
+                            <th>Destination</th>
+                            <th>Départ le</th>
+                            <th>Arrivée le</th>
+                            <th>Places</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trajets-table-body">
+                        <!-- Trajets chargés par JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section Utilisateurs -->
+        <div id="utilisateurs-section" style="display:none;">
+            <div class="table-container">
+                <h2><i class="fas fa-users"></i> Gestion des utilisateurs</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Téléphone</th>
+                            <th>Date d'inscription</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <!-- Utilisateurs chargés par JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section Paiements -->
+        <div id="paiements-section" style="display:none;">
+            <div class="table-container">
+                <h2><i class="fas fa-credit-card"></i> Gestion des paiements</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Utilisateur</th>
+                            <th>Trajet</th>
+                            <th>Montant</th>
+                            <th>Méthode</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paiements-table-body">
+                        <!-- Paiements chargés par JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ===================== DONNÉES SIMULÉES =====================
+        
+        const trajetsData = [
+            { id: 1, transport: 'avion', depart: 'NGAOUNDERE', destination: 'Brazzaville', dateDepart: '15/06/2026 10:00', dateArrivee: '15/06/2026 12:00', places: 55, statut: 'programmé' },
+            { id: 2, transport: 'avion', depart: 'NGAOUNDERE', destination: 'DOUALA', dateDepart: '16/06/2026 08:30', dateArrivee: '17/06/2026 14:30', places: 180, statut: 'programmé' },
+            { id: 3, transport: 'train', depart: 'NGAOUNDERE', destination: 'DOUALA', dateDepart: '17/06/2026 09:00', dateArrivee: '18/06/2026 11:00', places: 0, statut: 'complet' },
+            { id: 4, transport: 'avion', depart: 'NGAOUNDERE', destination: 'NDJAMENA', dateDepart: '15/06/2026 10:00', dateArrivee: '15/06/2026 12:00', places: 55, statut: 'programmé' },
+            { id: 5, transport: 'avion', depart: 'NGAOUNDERE', destination: 'bangui', dateDepart: '16/06/2026 08:30', dateArrivee: '17/06/2026 14:30', places: 180, statut: 'programmé' },
+            { id: 6, transport: 'train', depart: 'NGAOUNDERE', destination: 'YAOUNDE', dateDepart: '17/06/2026 09:00', dateArrivee: '18/06/2026 11:00', places: 0, statut: 'complet' },
+            { id: 7, transport: 'avion', depart: 'NGAOUNDERE', destination: 'YAOUNDE', dateDepart: '15/06/2026 10:00', dateArrivee: '15/06/2026 12:00', places: 55, statut: 'programmé' },
+            { id: 8, transport: 'avion', depart: 'NGAOUNDERE', destination: 'Libreville', dateDepart: '16/06/2026 08:30', dateArrivee: '17/06/2026 14:30', places: 180, statut: 'programmé' },
+            { id: 9, transport: 'bus', depart: 'NGAOUNDERE', destination: 'bangui', dateDepart: '17/06/2026 09:00', dateArrivee: '18/06/2026 11:00', places: 0, statut: 'programmé' },
+        ];
+
+        const usersData = [
+            { id: 1, nom: 'Administrateur', email: 'admin@ndere.com', telephone: '+23500000000', date: '23/05/2026' },
+            { id: 2, nom: 'ALI', email: 'ali@gmail.com', telephone: '+23566666666', date: '18/05/2026' },
+            { id: 3, nom: 'Moussa', email: 'moussa@gmail.com', telephone: '+23566666666', date: '18/05/2026' },
+            { id: 4, nom: 'Noussa', email: 'noussa@gmail.com', telephone: '+23566666666', date: '19/05/2026' },
+        ];
+
+        const paiementsData = [
+            { id: 1, user: 'ALI', trajet: 'NGAOUNDERE → DOUALA', montant: 850.00, methode: 'Carte bancaire', date: '23/05/2026 10:30', statut: 'confirmé' },
+            { id: 2, user: 'Moussa', trajet: 'NGAOUNDERE → Brazzaville', montant: 150.00, methode: 'Orange Money', date: '23/05/2026 11:15', statut: 'en_attente' },
+            { id: 3, user: 'Noussa', trajet: 'NGAOUNDERE → DOUALA', montant: 21000.00, methode: 'MTN Mobile Money', date: '23/05/2026 12:00', statut: 'en_attente' },
+        ];
+
+        // ===================== GESTION DE LA SECTION =====================
+        
+        function showSection(section) {
+            // Cacher toutes les sections
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('trajets-section').style.display = 'none';
+            document.getElementById('utilisateurs-section').style.display = 'none';
+            document.getElementById('paiements-section').style.display = 'none';
+            
+            // Afficher la section demandée
+            if (section === 'dashboard' || !section) {
+                document.getElementById('dashboard-section').style.display = 'block';
+                // Mettre à jour les compteurs
+                document.getElementById('trajets-count').textContent = trajetsData.length;
+                document.getElementById('users-count').textContent = usersData.length;
+                document.getElementById('paiements-count').textContent = paiementsData.length;
+            } else if (section === 'trajets') {
+                document.getElementById('trajets-section').style.display = 'block';
+                renderTrajets();
+            } else if (section === 'utilisateurs') {
+                document.getElementById('utilisateurs-section').style.display = 'block';
+                renderUsers();
+            } else if (section === 'paiements') {
+                document.getElementById('paiements-section').style.display = 'block';
+                renderPaiements();
+            }
+            
+            // Mettre à jour les liens du menu
+            document.querySelectorAll('.sidebar .menu a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `admin.html?section=${section}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // ===================== RENDER TRAJETS =====================
+        
+        function renderTrajets() {
+            const tbody = document.getElementById('trajets-table-body');
+            let html = '';
+            trajetsData.forEach(t => {
+                const icone = t.transport === 'avion' ? 'plane' : (t.transport === 'train' ? 'train' : 'bus');
+                const statutClass = t.statut;
+                const placesText = t.places > 0 ? t.places : 'Complet';
+                html += `
+                    <tr>
+                        <td>#${t.id}</td>
+                        <td>
+                            <i class="fas fa-${icone}"></i>
+                            ${t.transport.charAt(0).toUpperCase() + t.transport.slice(1)}
+                        </td>
+                        <td><strong>${t.depart}</strong></td>
+                        <td><strong>${t.destination}</strong></td>
+                        <td>${t.dateDepart}</td>
+                        <td>${t.dateArrivee}</td>
+                        <td>${placesText}</td>
+                        <td>
+                            <span class="statut-badge ${statutClass}">
+                                ${t.statut.charAt(0).toUpperCase() + t.statut.slice(1)}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn-action btn-edit" onclick="alert('Modifier le trajet #${t.id}')">
+                                <i class="fas fa-edit"></i> Modifier
+                            </button>
+                            <button class="btn-action btn-delete" onclick="if(confirm('Supprimer ce trajet ?')) alert('Trajet #${t.id} supprimé')">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // ===================== RENDER USERS =====================
+        
+        function renderUsers() {
+            const tbody = document.getElementById('users-table-body');
+            let html = '';
+            usersData.forEach(u => {
+                html += `
+                    <tr>
+                        <td>#${u.id}</td>
+                        <td><strong>${u.nom}</strong></td>
+                        <td>${u.email}</td>
+                        <td>${u.telephone}</td>
+                        <td>${u.date}</td>
+                        <td>
+                            <button class="btn-action btn-delete" onclick="if(confirm('Supprimer cet utilisateur ?')) alert('Utilisateur #${u.id} supprimé')">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // ===================== RENDER PAIEMENTS =====================
+        
+        function renderPaiements() {
+            const tbody = document.getElementById('paiements-table-body');
+            let html = '';
+            paiementsData.forEach(p => {
+                const statutClass = p.statut;
+                html += `
+                    <tr>
+                        <td>#${p.id}</td>
+                        <td><strong>${p.user}</strong></td>
+                        <td>${p.trajet}</td>
+                        <td style="font-weight:700; color:#1a73e8;">${p.montant.toFixed(2)} xaf</td>
+                        <td>${p.methode}</td>
+                        <td>${p.date}</td>
+                        <td>
+                            <span class="statut-badge ${statutClass}">
+                                ${p.statut.charAt(0).toUpperCase() + p.statut.slice(1)}
+                            </span>
+                        </td>
+                        <td>
+                            ${p.statut === 'en_attente' ? `
+                                <button class="btn-action btn-confirm" onclick="alert('Paiement #${p.id} confirmé')">
+                                    <i class="fas fa-check"></i> Confirmer
+                                </button>
+                                <button class="btn-action btn-reject" onclick="alert('Paiement #${p.id} rejeté')">
+                                    <i class="fas fa-times"></i> Rejeter
+                                </button>
+                            ` : `
+                                <span style="color:#888; font-size:0.8rem;">Traité</span>
+                            `}
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // ===================== INITIALISATION =====================
+        
+        // Récupérer la section depuis l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const section = urlParams.get('section') || 'dashboard';
+        showSection(section);
+        
+        // Gérer les clics sur les liens du menu
+        document.querySelectorAll('.sidebar .menu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                const section = href.split('=')[1] || 'dashboard';
+                window.history.pushState({}, '', `admin.html?section=${section}`);
+                showSection(section);
+            });
+        });
+        
+        // Gérer le bouton retour du navigateur
+        window.addEventListener('popstate', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const section = urlParams.get('section') || 'dashboard';
+            showSection(section);
+        });
+    </script>
+
+</body>
+</html>
