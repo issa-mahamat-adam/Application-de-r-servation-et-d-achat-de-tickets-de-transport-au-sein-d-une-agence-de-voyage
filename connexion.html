@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDéré - Connexion & Inscription</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background-image: url("bus.png");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 0;
+        }
+
+        /* HEADER */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 8px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .logo-container i { margin-right: 8px; }
+
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 2px solid white;
+            color: #1a73e8;
+        }
+        .btn-outline:hover { background: #f0f4ff; transform: scale(1.05); }
+
+        .btn-primary {
+            background: white;
+            border: 2px solid white;
+            color: #1a73e8;
+        }
+        .btn-primary:hover { background: #f0f4ff; transform: scale(1.05); }
+
+        /* Message de bienvenue */
+        .welcome-message {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .welcome-message .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #1a73e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .welcome-message span {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-deconnexion {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: 0.3s;
+        }
+
+        .btn-deconnexion:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- CONTENU PRINCIPAL --- */
+        .content-wrapper {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 20px 40px;
+            gap: 40px;
+            flex-wrap: wrap;
+            height: calc(100vh - 60px);
+            overflow: hidden;
+        }
+
+        /* Description à gauche */
+        .description-left {
+            flex: 1;
+            min-width: 280px;
+            max-width: 450px;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+        }
+
+        .description-left h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            line-height: 1.2;
+        }
+
+        .description-left h2 span {
+            color: #1a73e8;
+        }
+
+        .description-left p {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .description-left .features {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .description-left .features .item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .description-left .features .item i {
+            color: #1a73e8;
+            font-size: 1.1rem;
+        }
+
+        /* Formulaire à droite */
+        .form-container {
+            flex: 1;
+            min-width: 320px;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-container .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-container .tabs a {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .form-container .tabs a.active {
+            color: white;
+            border-bottom-color: #1a73e8;
+        }
+
+        .form-container .tabs a:hover {
+            color: white;
+        }
+
+        .form-container h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 10px 10px 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 0.85rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-group input:focus {
+            border-color: #1a73e8;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 10px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .form-submit:hover {
+            background: #1557b0;
+            transform: scale(1.02);
+        }
+
+        .form-message {
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .form-message.success {
+            background: rgba(52, 168, 83, 0.2);
+            color: #34a853;
+            border: 1px solid rgba(52, 168, 83, 0.3);
+        }
+
+        .form-message.error {
+            background: rgba(217, 48, 37, 0.2);
+            color: #d93025;
+            border: 1px solid rgba(217, 48, 37, 0.3);
+        }
+
+        .switch-mode {
+            text-align: center;
+            margin-top: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+        }
+
+        .switch-mode a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .switch-mode a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header { padding: 8px 15px; }
+            .content-wrapper { 
+                flex-direction: column; 
+                padding: 15px; 
+                gap: 20px;
+                height: auto;
+                overflow-y: auto;
+            }
+            html, body { overflow-y: auto; }
+            .description-left { text-align: center; max-width: 100%; }
+            .description-left .features .item { justify-content: center; }
+            .form-container { min-width: 100%; padding: 25px; }
+            .description-left h2 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        
+        <!-- HEADER -->
+        <header>
+            <div class="logo-container">
+                <i class="fas fa-paper-plane"></i>
+                <span>NDéré</span>
+            </div>
+            <div class="auth-buttons">
+                <a href="index.html" class="btn btn-outline">Accueil</a>
+            </div>
+        </header>
+
+        <!-- CONTENU PRINCIPAL -->
+        <div class="content-wrapper">
+            
+            <!-- Description à gauche -->
+            <div class="description-left">
+                <h2>Bienvenue sur <span>NDéré</span></h2>
+                <p>Rejoignez notre communauté de voyageurs et découvrez des destinations exceptionnelles à travers le monde.</p>
+                
+                <div class="features">
+                    <div class="item">
+                        <i class="fas fa-globe-africa"></i>
+                        <span>Explorez plus de 50 destinations</span>
+                    </div>
+                    <div class="item">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Réservez vos vols en quelques clics</span>
+                    </div>
+                    <div class="item">
+                        <i class="fas fa-hand-holding-heart"></i>
+                        <span>Service client disponible 24h/24</span>
+                    </div>
+                    <div class="item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Paiements 100% sécurisés</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulaire à droite -->
+            <div class="form-container">
+                <!-- Onglets -->
+                <div class="tabs">
+                    <a href="#" class="active" onclick="switchMode('login')">Connexion</a>
+                    <a href="#" onclick="switchMode('register')">Inscription</a>
+                </div>
+
+                <!-- Message -->
+                <div id="form-message" style="display:none; padding:8px; margin-bottom:15px; border-radius:8px; text-align:center; font-size:0.85rem;"></div>
+
+                <!-- Formulaire de connexion -->
+                <div id="login-form">
+                    <h3>Connectez-vous à votre compte</h3>
+                    <form onsubmit="login(event)">
+                        <div class="form-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="login-email" placeholder="Adresse email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="login-password" placeholder="Mot de passe" required>
+                        </div>
+                        
+                        <button type="submit" class="form-submit">Se connecter</button>
+                    </form>
+                    <div class="switch-mode">
+                        Pas de compte ? <a href="#" onclick="switchMode('register')">Inscrivez-vous</a>
+                    </div>
+                </div>
+
+                <!-- Formulaire d'inscription -->
+                <div id="register-form" style="display:none;">
+                    <h3>Créez votre compte NDéré</h3>
+                    <form onsubmit="register(event)">
+                        <div class="form-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="reg-nom" placeholder="Nom complet" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="reg-email" placeholder="Adresse email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <i class="fas fa-phone"></i>
+                            <input type="text" id="reg-telephone" placeholder="Numéro de téléphone">
+                        </div>
+                        
+                        <div class="form-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="reg-password" placeholder="Mot de passe" required>
+                        </div>
+                        
+                        <button type="submit" class="form-submit">S'inscrire</button>
+                    </form>
+                    <div class="switch-mode">
+                        Déjà un compte ? <a href="#" onclick="switchMode('login')">Connectez-vous</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <script>
+        // ===================== GESTION DES MODES =====================
+        
+        function switchMode(mode) {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const tabs = document.querySelectorAll('.tabs a');
+            const message = document.getElementById('form-message');
+            
+            // Masquer le message
+            message.style.display = 'none';
+            
+            if (mode === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+            }
+        }
+
+        // ===================== AFFICHER UN MESSAGE =====================
+        
+        function showMessage(message, type) {
+            const msgDiv = document.getElementById('form-message');
+            msgDiv.textContent = message;
+            msgDiv.className = 'form-message ' + type;
+            msgDiv.style.display = 'block';
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 4000);
+        }
+
+        // ===================== CONNEXION =====================
+        
+        function login(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            // Récupérer les utilisateurs stockés
+            const users = JSON.parse(localStorage.getItem('ndere_users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+
+            if (user) {
+                // Connexion réussie
+                localStorage.setItem('ndere_user', JSON.stringify({ id: user.id, nom: user.nom, email: user.email }));
+                showMessage('Connexion réussie ! Bienvenue ' + user.nom, 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                showMessage('Email ou mot de passe incorrect', 'error');
+            }
+        }
+
+        // ===================== INSCRIPTION =====================
+        
+        function register(e) {
+            e.preventDefault();
+            const nom = document.getElementById('reg-nom').value;
+            const email = document.getElementById('reg-email').value;
+            const telephone = document.getElementById('reg-telephone').value || '';
+            const password = document.getElementById('reg-password').value;
+
+            // Récupérer les utilisateurs stockés
+            const users = JSON.parse(localStorage.getItem('ndere_users') || '[]');
+
+            // Vérifier si l'email existe déjà
+            if (users.find(u => u.email === email)) {
+                showMessage('Cet email est déjà utilisé', 'error');
+                return;
+            }
+
+            // Créer un nouvel utilisateur
+            const newUser = {
+                id: users.length + 1,
+                nom: nom,
+                email: email,
+                telephone: telephone,
+                password: password
+            };
+
+            users.push(newUser);
+            localStorage.setItem('ndere_users', JSON.stringify(users));
+
+            // Connecter l'utilisateur
+            localStorage.setItem('ndere_user', JSON.stringify({ id: newUser.id, nom: newUser.nom, email: newUser.email }));
+            showMessage('Inscription réussie ! Bienvenue ' + newUser.nom, 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+    </script>
+
+</body>
+</html>
