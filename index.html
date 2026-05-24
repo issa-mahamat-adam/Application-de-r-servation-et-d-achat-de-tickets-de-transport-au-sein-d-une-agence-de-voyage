@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDéré - Voyages</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: #f0f4f8;
+        }
+
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background-image: url("aire.jpg");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 0;
+        }
+
+        /* HEADER - EFFET GLASS */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 8px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+            width: 100%;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .logo-container i { margin-right: 8px; }
+
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline {
+            background: white;
+            border: 2px solid white;
+            color: #1a73e8;
+        }
+        .btn-outline:hover { background: #f0f4ff; transform: scale(1.05); }
+
+        .btn-primary {
+            background: white;
+            border: 2px solid white;
+            color: #1a73e8;
+        }
+        .btn-primary:hover { background: #f0f4ff; transform: scale(1.05); }
+
+        /* Message de bienvenue - MODIFIÉ EN BLANC */
+        .welcome-message {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .welcome-message .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #1a73e8;
+        }
+
+        .welcome-message span {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-deconnexion {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: 0.3s;
+        }
+
+        .btn-deconnexion:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* CONTENU HERO */
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            padding: 60px 40px;
+            max-width: 600px;
+            margin-top: 140px;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+        }
+        .hero-content h4 {
+            color: #a3c9f1;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        .hero-content h1 span { color: #1a73e8; }
+        .hero-content p {
+            font-size: 1.1rem;
+            max-width: 450px;
+            line-height: 1.6;
+        }
+
+        /* --- FORMULAIRE DE RECHERCHE --- */
+        .search-wrapper {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 10;
+            padding: 0 20px;
+        }
+
+        .search-container {
+            background: white;
+            padding: 20px 20px 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .transport-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .transport-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border: none;
+            background: #f1f3f4;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #5f6368;
+            transition: all 0.3s ease;
+        }
+
+        .transport-btn.active {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .transport-btn i {
+            font-size: 1.1rem;
+        }
+
+        .search-fields {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: #5f6368;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: #1a73e8;
+        }
+
+        .search-btn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .search-btn:hover {
+            background: #1557b0;
+        }
+
+        /* --- 3 GARANTIES --- */
+        .features-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            padding: 30px 20px;
+            max-width: 1000px;
+            margin: -20px auto 0;
+            position: relative;
+            z-index: 15;
+            background: transparent;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .feature-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .feature-icon.blue { background: #e8f0fe; color: #1a73e8; }
+        .feature-icon.green { background: #e6f4ea; color: #34a853; }
+        .feature-icon.yellow { background: #fef7e0; color: #f9ab00; }
+
+        .feature-text h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #202124;
+            margin-bottom: 2px;
+        }
+
+        .feature-text p {
+            font-size: 0.8rem;
+            color: #5f6368;
+            line-height: 1.3;
+        }
+
+        /* --- TABLEAU DE BORD DES VOLS DISPONIBLES --- */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .dashboard-container h2 {
+            text-align: center;
+            color: #1a73e8;
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-container h2 span {
+            color: #202124;
+        }
+
+        .table-wrapper {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table thead {
+            background: #1a73e8;
+            color: white;
+        }
+
+        table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .transport-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .transport-badge.avion {
+            background: #e8f0fe;
+            color: #1a73e8;
+        }
+
+        .transport-badge.train {
+            background: #e6f4ea;
+            color: #34a853;
+        }
+
+        .transport-badge.bus {
+            background: #fef7e0;
+            color: #f9ab00;
+        }
+
+        .statut-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .statut-badge.programme {
+            background: #e8f0fe;
+            color: #1a73e8;
+        }
+
+        .statut-badge.complet {
+            background: #fce8e6;
+            color: #d93025;
+        }
+
+        .statut-badge.annule {
+            background: #fef7e0;
+            color: #f9ab00;
+        }
+
+        .btn-reserve {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+
+        .btn-reserve:hover {
+            background: #1557b0;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: #1a1a2e;
+            color: #ccc;
+            padding: 40px 20px 20px;
+            margin-top: 60px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #1a73e8, #34a853, #f9ab00);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+        }
+
+        .footer-col {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .footer-col h4 {
+            color: white;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .footer-col p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-icons a {
+            color: #aaa;
+            font-size: 1.5rem;
+            transition: 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #1a73e8;
+            transform: scale(1.1);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 20px auto 0;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header { padding: 8px 15px; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .search-fields { flex-direction: column; }
+            .search-btn { width: 100%; }
+            .features-container { flex-direction: column; gap: 15px; padding: 15px; }
+            .feature-item { min-width: 100%; }
+            table { font-size: 0.8rem; }
+            table th, table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Notification de bienvenue -->
+    <div id="notification" style="display:none; position:fixed; top:70px; left:50%; transform:translateX(-50%); z-index:1000; background:rgba(52,168,83,0.95); color:white; padding:12px 25px; border-radius:10px; box-shadow:0 5px 20px rgba(0,0,0,0.2); font-weight:600; text-align:center; max-width:90%; animation:fadeInDown 0.5s ease;">
+        <i class="fas fa-check-circle"></i> <span id="notification-message">Bienvenue !</span>
+    </div>
+
+    <section class="hero">
+        
+        <!-- HEADER -->
+        <header>
+            <div class="logo-container">
+                <i class="fas fa-paper-plane"></i>
+                <span>NDéré</span>
+            </div>
+            <div class="auth-buttons" id="auth-buttons">
+                <!-- Affiché par JavaScript -->
+            </div>
+        </header>
+
+        <!-- TEXTE -->
+        <div class="hero-content">
+            <h4>EXPLOREZ LE MONDE</h4>
+            <h1>Votre Voyage,<br><span>Notre Passion</span></h1>
+            <p>Découvrez des destinations à couper le souffle, des offres exclusives et des expériences inoubliables.</p>
+        </div>
+
+        <!-- FORMULAIRE DE RECHERCHE -->
+        <div class="search-wrapper">
+            <div class="search-container">
+                <form id="search-form">
+                    <div class="transport-tabs">
+                        <button type="button" class="transport-btn active" onclick="setTransport('avion', this)">
+                            <i class="fas fa-plane"></i> Avion
+                        </button>
+                        <button type="button" class="transport-btn" onclick="setTransport('train', this)">
+                            <i class="fas fa-train"></i> Train
+                        </button>
+                        <button type="button" class="transport-btn" onclick="setTransport('bus', this)">
+                            <i class="fas fa-bus"></i> Bus
+                        </button>
+                    </div>
+
+                    <input type="hidden" name="mode_transport" id="mode_transport" value="avion">
+                    
+                    <div class="search-fields">
+                        <div class="input-group">
+                            <label>Départ</label>
+                            <input type="text" id="depart" placeholder="Ville de départ">
+                        </div>
+                        <div class="input-group">
+                            <label>Destination</label>
+                            <input type="text" id="destination" placeholder="Ville d'arrivée">
+                        </div>
+                        <div class="input-group">
+                            <label>Date</label>
+                            <input type="date" id="date_depart">
+                        </div>
+                        <button type="button" class="search-btn" onclick="rechercherTrajets()">Rechercher</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- 3 GARANTIES -->
+    <div class="features-container">
+        <div class="feature-item">
+            <div class="feature-icon blue">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="feature-text">
+                <h3>Meilleur Prix Garanti</h3>
+                <p>Nous vous assurons d'obtenir les meilleurs tarifs pour vos voyages.</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon green">
+                <i class="fas fa-headset"></i>
+            </div>
+            <div class="feature-text">
+                <h3>Support Client 24/7</h3>
+                <p>Notre équipe est disponible à tout moment pour vous assister.</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon yellow">
+                <i class="fas fa-lock"></i>
+            </div>
+            <div class="feature-text">
+                <h3>Réservation Simple & Sécurisée</h3>
+                <p>Réservez en toute confiance avec notre système sécurisé.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLEAU DE BORD DES VOLS DISPONIBLES -->
+    <div class="dashboard-container">
+        <h2>🚀 <span>Nos Vols et Trajets Disponibles</span></h2>
+        
+        <div class="table-wrapper">
+            <div id="trajets-container">
+                <!-- Les trajets seront affichés ici par JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>Wanderly</h4>
+                <p>
+                    Votre partenaire de confiance pour des voyages inoubliables à travers le monde.
+                </p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Wanderly. Tous droits réservés.
+        </div>
+    </footer>
+
+    <script>
+        // ===================== GESTION DE L'AUTHENTIFICATION =====================
+        
+        // Vérifier si l'utilisateur est connecté (stocké dans localStorage)
+        function checkAuth() {
+            const user = localStorage.getItem('ndere_user');
+            const authButtons = document.getElementById('auth-buttons');
+            
+            if (user) {
+                const userData = JSON.parse(user);
+                authButtons.innerHTML = `
+                    <div class="welcome-message">
+                        <div class="user-avatar">
+                            ${userData.nom.charAt(0).toUpperCase()}
+                        </div>
+                        <span>Bienvenue, ${userData.nom}</span>
+                        <a href="#" class="btn-deconnexion" onclick="deconnexion()">Déconnexion</a>
+                    </div>
+                `;
+            } else {
+                authButtons.innerHTML = `
+                    <a href="connexion.html" class="btn btn-outline">Se connecter</a>
+                    <a href="connexion.html" class="btn btn-primary">S'inscrire</a>
+                `;
+            }
+        }
+
+        // Déconnexion
+        function deconnexion() {
+            localStorage.removeItem('ndere_user');
+            showNotification('Déconnexion réussie !');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
+
+        // Afficher une notification
+        function showNotification(message) {
+            const notif = document.getElementById('notification');
+            const notifMsg = document.getElementById('notification-message');
+            notifMsg.textContent = message;
+            notif.style.display = 'block';
+            setTimeout(() => {
+                notif.style.opacity = '0';
+                setTimeout(() => {
+                    notif.style.display = 'none';
+                    notif.style.opacity = '1';
+                }, 500);
+            }, 3000);
+        }
+
+        // ===================== GESTION DES TRANSPORTS =====================
+        
+        let modeTransport = 'avion';
+
+        function setTransport(type, btn) {
+            modeTransport = type;
+            document.getElementById('mode_transport').value = type;
+            document.querySelectorAll('.transport-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        // ===================== DONNÉES DES TRAJETS (SIMULÉES) =====================
+        
+        const trajetsData = [
+            { id: 1, transport: 'avion', depart: 'NGAOUNDERE', destination: 'Brazzaville', dateDepart: '15/06/2026 10:00', dateArrivee: '15/06/2026 12:00', duree: '2h', places: 55, prix: 150.00, statut: 'programmé' },
+            { id: 2, transport: 'avion', depart: 'NGAOUNDERE', destination: 'DOUALA', dateDepart: '16/06/2026 08:30', dateArrivee: '17/06/2026 14:30', duree: '12h', places: 180, prix: 850.00, statut: 'programmé' },
+            { id: 3, transport: 'train', depart: 'NGAOUNDERE', destination: 'DOUALA', dateDepart: '17/06/2026 09:00', dateArrivee: '18/06/2026 11:00', duree: '3h', places: 80, prix: 21000.00, statut: 'programmé' },
+            { id: 4, transport: 'avion', depart: 'NGAOUNDERE', destination: 'NDJAMENA', dateDepart: '15/06/2026 10:00', dateArrivee: '15/06/2026 12:00', duree: '2h', places: 55, prix: 150.00, statut: 'programmé' },
+            { id: 5, transport: 'avion', depart: 'NGAOUNDERE', destination: 'bangui', dateDepart: '16/06/2026 08:30', dateArrivee: '17/06/2026 14:30', duree: '12h', places: 180, prix: 850.00, statut: 'programmé' },
+            { id: 6, transport: 'train', depart: 'NGAOUNDERE', destination: 'YAOUNDE', dateDepart: '17/06/2026 09:00', dateArrivee: '18/06/2026 11:00', duree: '3h', places: 80, prix: 21000.00, statut: 'programmé' },
+            { id: 7, transport: 'avion', depart: 'NGAOUNDERE', destination: 'YAOUNDE', dateDepart: '15/06/2026 10:00', dateArrivee: '15/06/2026 12:00', duree: '2h', places: 55, prix: 150.00, statut: 'programmé' },
+            { id: 8, transport: 'avion', depart: 'NGAOUNDERE', destination: 'Libreville', dateDepart: '16/06/2026 08:30', dateArrivee: '17/06/2026 14:30', duree: '12h', places: 180, prix: 850.00, statut: 'programmé' },
+            { id: 9, transport: 'bus', depart: 'NGAOUNDERE', destination: 'bangui', dateDepart: '17/06/2026 09:00', dateArrivee: '18/06/2026 11:00', duree: '3h', places: 80, prix: 21000.00, statut: 'programmé' },
+            { id: 10, transport: 'train', depart: 'YAOUNDE', destination: 'DOUALA', dateDepart: '29/05/2026 14:28', dateArrivee: '21/05/2026 18:28', duree: '4h', places: 150, prix: 16000.00, statut: 'programmé' },
+            { id: 11, transport: 'train', depart: 'DOUALA', destination: 'YAOUNDE', dateDepart: '21/05/2026 15:28', dateArrivee: '21/05/2026 15:28', duree: '4h', places: 180, prix: 17000.00, statut: 'programmé' },
+            { id: 12, transport: 'bus', depart: 'NGAOUNDERE', destination: 'DOUALA', dateDepart: '17/06/2026 09:00', dateArrivee: '18/06/2026 11:00', duree: '3h', places: 80, prix: 21000.00, statut: 'programmé' },
+        ];
+
+        // ===================== AFFICHAGE DES TRAJETS =====================
+        
+        function afficherTrajets(trajets) {
+            const container = document.getElementById('trajets-container');
+            
+            if (trajets.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-search"></i>
+                        <h3>Aucun trajet trouvé</h3>
+                        <p>Essayez de modifier vos critères de recherche.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Transport</th>
+                            <th>Départ</th>
+                            <th>Destination</th>
+                            <th>Départ le</th>
+                            <th>Arrivée le</th>
+                            <th>Durée</th>
+                            <th>Places</th>
+                            <th>Prix</th>
+                            <th>Statut</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            trajets.forEach(trajet => {
+                const icone = trajet.transport === 'avion' ? 'plane' : (trajet.transport === 'train' ? 'train' : 'bus');
+                const badge = trajet.transport;
+                const placesColor = trajet.places > 0 ? '#34a853' : '#d93025';
+                const placesText = trajet.places > 0 ? trajet.places : 'Complet';
+                const statutClass = trajet.statut;
+
+                html += `
+                    <tr>
+                        <td>
+                            <span class="transport-badge ${badge}">
+                                <i class="fas fa-${icone}"></i>
+                                ${trajet.transport.charAt(0).toUpperCase() + trajet.transport.slice(1)}
+                            </span>
+                        </td>
+                        <td><strong>${trajet.depart}</strong></td>
+                        <td><strong>${trajet.destination}</strong></td>
+                        <td>${trajet.dateDepart}</td>
+                        <td>${trajet.dateArrivee}</td>
+                        <td>${trajet.duree}</td>
+                        <td>
+                            <span style="color:${placesColor}; font-weight:600;">${placesText}</span>
+                        </td>
+                        <td style="font-weight:700; color:#1a73e8;">
+                            ${trajet.prix.toFixed(2)} xaf
+                        </td>
+                        <td>
+                            <span class="statut-badge ${statutClass}">
+                                ${trajet.statut.charAt(0).toUpperCase() + trajet.statut.slice(1)}
+                            </span>
+                        </td>
+                        <td>
+                            ${trajet.places > 0 && trajet.statut !== 'annulé' ? 
+                                `<button class="btn-reserve" onclick="reserver(${trajet.id})">Réserver</button>` :
+                                `<span style="color:#888; font-size:0.8rem;">Indisponible</span>`
+                            }
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // ===================== RECHERCHE DE TRAJETS =====================
+        
+        function rechercherTrajets() {
+            const depart = document.getElementById('depart').value.toLowerCase();
+            const destination = document.getElementById('destination').value.toLowerCase();
+            const date = document.getElementById('date_depart').value;
+
+            let resultats = trajetsData.filter(trajet => {
+                let match = true;
+                if (modeTransport && trajet.transport !== modeTransport) match = false;
+                if (depart && !trajet.depart.toLowerCase().includes(depart)) match = false;
+                if (destination && !trajet.destination.toLowerCase().includes(destination)) match = false;
+                // Pour la date, on compare simplement la date (format simplifié)
+                if (date) {
+                    const dateTrajet = trajet.dateDepart.split(' ')[0];
+                    const dateRecherche = date.split('-').reverse().join('/');
+                    if (dateTrajet !== dateRecherche) match = false;
+                }
+                return match;
+            });
+
+            afficherTrajets(resultats);
+        }
+
+        // ===================== RÉSERVATION =====================
+        
+        function reserver(id) {
+            const user = localStorage.getItem('ndere_user');
+            if (!user) {
+                alert('Veuillez vous connecter pour réserver !');
+                window.location.href = 'connexion.html';
+                return;
+            }
+            // Rediriger vers la page de réservation
+            window.location.href = `reservation.html?depart_id=${id}`;
+        }
+
+        // ===================== INITIALISATION =====================
+        
+        // Au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            afficherTrajets(trajetsData);
+        });
+    </script>
+
+</body>
+</html>
