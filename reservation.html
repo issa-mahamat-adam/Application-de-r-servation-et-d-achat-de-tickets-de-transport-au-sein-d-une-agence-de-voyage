@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservation - NDéré</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            background-image: url("aire.jpg");
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            z-index: 0;
+        }
+
+        /* HEADER - EFFET GLASS */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 8px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35), 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .logo-container i { margin-right: 8px; }
+
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Message de bienvenue */
+        .welcome-message {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .welcome-message .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #1a73e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .welcome-message span {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-deconnexion {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.7rem;
+            transition: 0.3s;
+        }
+
+        .btn-deconnexion:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- CONTENU PRINCIPAL --- */
+        .content-wrapper {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 20px 40px;
+            gap: 40px;
+            flex-wrap: wrap;
+            height: calc(100vh - 60px);
+            overflow: hidden;
+        }
+
+        /* DIV BLANC AU MILIEU (comme le formulaire de recherche) */
+        .reservation-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .reservation-container h2 {
+            text-align: center;
+            color: #1a73e8;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .reservation-container h2 span {
+            color: #202124;
+        }
+
+        /* Informations du trajet */
+        .trajet-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .trajet-summary .item {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .trajet-summary .item .label {
+            font-size: 0.7rem;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .trajet-summary .item .value {
+            font-weight: 600;
+            color: #202124;
+            font-size: 0.95rem;
+        }
+
+        .trajet-summary .item .value i {
+            margin-right: 5px;
+        }
+
+        /* Formulaire */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #5f6368;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-group select:focus, .form-group input:focus {
+            border-color: #1a73e8;
+        }
+
+        .form-group select {
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .btn-paiement {
+            background: #34a853;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-paiement:hover {
+            background: #2d8f47;
+        }
+
+        .form-message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .form-message.success {
+            background: rgba(52, 168, 83, 0.2);
+            color: #34a853;
+            border: 1px solid rgba(52, 168, 83, 0.3);
+        }
+
+        .form-message.error {
+            background: rgba(217, 48, 37, 0.2);
+            color: #d93025;
+            border: 1px solid rgba(217, 48, 37, 0.3);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        .back-link:hover {
+            color: #1a73e8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header { padding: 8px 15px; }
+            .content-wrapper { 
+                flex-direction: column; 
+                padding: 15px; 
+                gap: 20px;
+                height: auto;
+                overflow-y: auto;
+            }
+            html, body { overflow-y: auto; }
+            .reservation-container { padding: 20px; }
+            .trajet-summary .item { min-width: 100%; }
+            .form-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        
+        <!-- HEADER -->
+        <header>
+            <div class="logo-container">
+                <i class="fas fa-paper-plane"></i>
+                <span>NDéré</span>
+            </div>
+            <div class="auth-buttons" id="auth-buttons">
+                <!-- Rempli par JavaScript -->
+            </div>
+        </header>
+
+        <!-- CONTENU PRINCIPAL -->
+        <div class="content-wrapper">
+            
+            <!-- DIV BLANC AU MILIEU -->
+            <div class="reservation-container" id="reservation-container">
+                <h2>🛫 <span>Réservation</span></h2>
+                <div id="reservation-content">Chargement...</div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <script>
+        // ===================== RÉCUPÉRATION DES DONNÉES =====================
+        
+        // Récupérer l'ID du trajet depuis l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const departId = urlParams.get('depart_id') || '1';
+
+        // Données des trajets (simulées)
+        const trajetsData = [
+            { id: 1, transport: 'avion', depart: 'NGAOUNDERE', destination: 'Brazzaville', date: '15/06/2026 10:00', places: 55, duree: '2h', distance: '350 km' },
+            { id: 2, transport: 'avion', depart: 'NGAOUNDERE', destination: 'DOUALA', date: '16/06/2026 08:30', places: 180, duree: '12h', distance: '10700 km' },
+            { id: 3, transport: 'train', depart: 'NGAOUNDERE', destination: 'DOUALA', date: '17/06/2026 09:00', places: 0, duree: '3h', distance: '6800 km' },
+            { id: 4, transport: 'avion', depart: 'NGAOUNDERE', destination: 'NDJAMENA', date: '15/06/2026 10:00', places: 55, duree: '2h', distance: '350 km' },
+            { id: 5, transport: 'avion', depart: 'NGAOUNDERE', destination: 'bangui', date: '16/06/2026 08:30', places: 180, duree: '12h', distance: '10700 km' },
+            { id: 6, transport: 'train', depart: 'NGAOUNDERE', destination: 'YAOUNDE', date: '17/06/2026 09:00', places: 0, duree: '3h', distance: '6800 km' },
+            { id: 7, transport: 'avion', depart: 'NGAOUNDERE', destination: 'YAOUNDE', date: '15/06/2026 10:00', places: 55, duree: '2h', distance: '350 km' },
+            { id: 8, transport: 'avion', depart: 'NGAOUNDERE', destination: 'Libreville', date: '16/06/2026 08:30', places: 180, duree: '12h', distance: '10700 km' },
+            { id: 9, transport: 'bus', depart: 'NGAOUNDERE', destination: 'bangui', date: '17/06/2026 09:00', places: 0, duree: '3h', distance: '6800 km' },
+        ];
+
+        // Classes et prix (simulés)
+        const classesData = {
+            'avion': [
+                { id: 1, nom: 'Économique', prix: 150.00 },
+                { id: 2, nom: 'Affaires', prix: 250.00 },
+                { id: 3, nom: 'Première', prix: 400.00 }
+            ],
+            'train': [
+                { id: 4, nom: 'Classique', prix: 180.00 },
+                { id: 5, nom: 'VIP', prix: 280.00 }
+            ],
+            'bus': [
+                { id: 4, nom: 'Classique', prix: 120.00 },
+                { id: 5, nom: 'VIP', prix: 200.00 }
+            ]
+        };
+
+        // ===================== AFFICHAGE DE LA RÉSERVATION =====================
+        
+        function renderReservation() {
+            const container = document.getElementById('reservation-content');
+            const trajet = trajetsData.find(t => t.id == departId);
+            
+            if (!trajet) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:30px; color:#888;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:3rem; margin-bottom:15px;"></i>
+                        <h3>Trajet introuvable</h3>
+                        <a href="index.html" style="display:inline-block; margin-top:15px; padding:10px 25px; background:#1a73e8; color:white; text-decoration:none; border-radius:8px; font-weight:600;">
+                            Retour à l'accueil
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            const icone = trajet.transport === 'avion' ? 'plane' : (trajet.transport === 'train' ? 'train' : 'bus');
+            const classes = classesData[trajet.transport] || [];
+
+            let classOptions = classes.map(c => 
+                `<option value="${c.id}" data-prix="${c.prix}">${c.nom} - ${c.prix.toFixed(2)} xaf</option>`
+            ).join('');
+
+            container.innerHTML = `
+                <div class="trajet-summary">
+                    <div class="item">
+                        <div class="label">Transport</div>
+                        <div class="value">
+                            <i class="fas fa-${icone}"></i>
+                            ${trajet.transport.charAt(0).toUpperCase() + trajet.transport.slice(1)}
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Départ</div>
+                        <div class="value">${trajet.depart}</div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Destination</div>
+                        <div class="value">${trajet.destination}</div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Date</div>
+                        <div class="value">${trajet.date}</div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Places</div>
+                        <div class="value" style="color:${trajet.places > 0 ? '#34a853' : '#d93025'};">
+                            ${trajet.places > 0 ? trajet.places : 'Complet'}
+                        </div>
+                    </div>
+                </div>
+
+                ${trajet.places > 0 ? `
+                    <form id="reservation-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nom complet</label>
+                                <input type="text" id="res-nom" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="res-email" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Téléphone</label>
+                                <input type="text" id="res-telephone" placeholder="Numéro de téléphone" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nombre de places</label>
+                                <input type="number" id="res-places" value="1" min="1" max="${trajet.places}" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Classe</label>
+                            <select id="res-classe" required>
+                                ${classOptions}
+                            </select>
+                        </div>
+                        <div class="form-group" style="text-align:center; border-top:1px solid #eee; padding-top:10px;">
+                            <label style="font-size:1rem;">Prix total</label>
+                            <div style="font-size:1.5rem; font-weight:700; color:#1a73e8;" id="total-price">
+                                ${classes.length > 0 ? classes[0].prix.toFixed(2) : '0.00'} xaf
+                            </div>
+                        </div>
+                        <button type="button" class="btn-paiement" onclick="procederPaiement()">
+                            <i class="fas fa-credit-card"></i> Procéder au paiement
+                        </button>
+                    </form>
+                ` : `
+                    <div style="text-align:center; padding:20px; color:#d93025; font-weight:600;">
+                        <i class="fas fa-exclamation-circle"></i> Ce trajet est complet
+                    </div>
+                `}
+
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Retour à l'accueil
+                </a>
+            `;
+
+            // Mettre à jour le prix quand la classe ou le nombre de places change
+            if (trajet.places > 0) {
+                document.getElementById('res-classe').addEventListener('change', updatePrice);
+                document.getElementById('res-places').addEventListener('input', updatePrice);
+            }
+        }
+
+        // ===================== MISE À JOUR DU PRIX =====================
+        
+        function updatePrice() {
+            const select = document.getElementById('res-classe');
+            const places = document.getElementById('res-places').value;
+            const prix = parseFloat(select.options[select.selectedIndex].getAttribute('data-prix'));
+            const total = prix * places;
+            document.getElementById('total-price').textContent = total.toFixed(2) + ' xaf';
+        }
+
+        // ===================== PROCÉDER AU PAIEMENT =====================
+        
+        function procederPaiement() {
+            const user = localStorage.getItem('ndere_user');
+            if (!user) {
+                alert('Veuillez vous connecter pour réserver !');
+                window.location.href = 'connexion.html';
+                return;
+            }
+
+            const trajet = trajetsData.find(t => t.id == departId);
+            const select = document.getElementById('res-classe');
+            const classeId = select.value;
+            const classeNom = select.options[select.selectedIndex].text.split(' - ')[0];
+            const prix = parseFloat(select.options[select.selectedIndex].getAttribute('data-prix'));
+
+            const reservationData = {
+                depart_id: departId,
+                transport: trajet.transport,
+                depart: trajet.depart,
+                destination: trajet.destination,
+                date: trajet.date,
+                duree: trajet.duree,
+                distance: trajet.distance,
+                nom: document.getElementById('res-nom').value,
+                email: document.getElementById('res-email').value,
+                telephone: document.getElementById('res-telephone').value,
+                nombre_places: document.getElementById('res-places').value,
+                classe: classeNom,
+                classe_id: classeId,
+                prix: prix
+            };
+
+            localStorage.setItem('ndere_reservation', JSON.stringify(reservationData));
+            window.location.href = 'paiement.html';
+        }
+
+        // ===================== GESTION DE L'AUTHENTIFICATION =====================
+        
+        function checkAuth() {
+            const user = localStorage.getItem('ndere_user');
+            const authButtons = document.getElementById('auth-buttons');
+            if (user) {
+                const userData = JSON.parse(user);
+                authButtons.innerHTML = `
+                    <div class="welcome-message">
+                        <div class="user-avatar">${userData.nom.charAt(0).toUpperCase()}</div>
+                        <span>Bienvenue, ${userData.nom}</span>
+                        <a href="deconnexion.html" class="btn-deconnexion">Déconnexion</a>
+                    </div>
+                `;
+                // Pré-remplir le nom
+                setTimeout(() => {
+                    const nomInput = document.getElementById('res-nom');
+                    if (nomInput) nomInput.value = userData.nom;
+                }, 100);
+            } else {
+                authButtons.innerHTML = `
+                    <a href="connexion.html" class="btn btn-outline">Se connecter</a>
+                    <a href="connexion.html" class="btn btn-primary">S'inscrire</a>
+                `;
+            }
+        }
+
+        // ===================== INITIALISATION =====================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            renderReservation();
+        });
+    </script>
+
+</body>
+</html>
